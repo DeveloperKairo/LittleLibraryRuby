@@ -21,39 +21,37 @@ class Library
   end
 
   def remover_livro
-    puts "\n--- BUSCAR LIVRO POR NOME (opcional) ---"
-    print "Digite parte do título para buscar (ou Enter para pular): "
-    termo_busca = gets.chomp.downcase
-  
-    if !termo_busca.empty?
-      livros_encontrados = @books.select { |b| b.titulo.downcase.include?(termo_busca) }
-      if livros_encontrados.any?
-        puts "\nLivros encontrados:"
-        livros_encontrados.each { |b| puts "ID: #{b.id} | Título: #{b.titulo}" }
-      else
-        puts "Nenhum livro encontrado com '#{termo_busca}'."
-      end
+    puts "\n--- BUSCAR LIVRO ---"
+    livros_encontrados = buscar_livro_por_nome
+    
+    if livros_encontrados.nil? || livros_encontrados.empty?
+      puts "\n===== TODOS OS LIVROS ====="
+      @books.each { |b| puts "ID: #{b.id} | Título: #{b.titulo} | Autor: #{b.autor}" }
     end
-  
+    
     print "\nDigite o ID do livro que deseja remover: "
     id = gets.chomp.to_i
-    book = @books.find { |b| b.id == id }
-  
-    if book
-      @books.delete(book)
-      puts "Livro removido com sucesso."
+    livro = @books.find { |b| b.id == id }
+    
+    if livro
+      @books.delete(livro)
+      puts "Livro '#{livro.titulo}' removido com sucesso!"
     else
-      puts "Livro não encontrado."
+      puts "ID inválido ou livro não encontrado."
     end
   end
 
   def buscar_livro_por_nome
-    livro = @books.find {|b| b.title.downcase.include?(nome.downcase)}
-    if livro
-      puts "Livro encontrado: ID: #{livro.id}, Título: #{livro.title}"
-      return livro.id
+    print "Digite parte do título para buscar: "
+    termo = gets.chomp.downcase
+    livros_encontrados = @books.select { |b| b.titulo.downcase.include?(termo) }
+    
+    if livros_encontrados.any?
+      puts "\nLivros encontrados:"
+      livros_encontrados.each { |b| puts "ID: #{b.id} | Título: #{b.titulo} | Autor: #{b.autor}" }
+      return livros_encontrados # Retorna array de livros para reutilização
     else
-      puts "Livro não encontrado."
+      puts "Nenhum livro encontrado com '#{termo}'."
       nil
     end
   end
@@ -80,20 +78,13 @@ class Library
   end
 
   def remover_usuario
-    puts "\n--- BUSCAR USUÁRIO POR NOME (opcional) ---"
-    print "Digite parte do nome para buscar (ou Enter para pular): "
-    termo_busca = gets.chomp.downcase
+    puts "\n--- BUSCAR USUÁRIO PARA REMOÇÃO ---"
+    usuarios_encontrados = buscar_usuario_por_nome 
   
-    if !termo_busca.empty?
-      usuarios_encontrados = @users.select { |u| u.name.downcase.include?(termo_busca) }
-      if usuarios_encontrados.any?
-        puts "\nUsuários encontrados:"
-        usuarios_encontrados.each { |u| puts "ID: #{u.id} | Nome: #{u.name} | Email: #{u.email}" }
-      else
-        puts "Nenhum usuário encontrado com '#{termo_busca}'."
-      end
+    if usuarios_encontrados.nil? || usuarios_encontrados.empty?
+      listar_usuarios
     end
-
+  
     print "\nDigite o ID do usuário que deseja remover: "
     id = gets.chomp.to_i
     usuario = @users.find { |u| u.id == id }
@@ -102,17 +93,21 @@ class Library
       @users.delete(usuario)
       puts "Usuário '#{usuario.name}' removido com sucesso!"
     else
-      puts "Usuário não encontrado."
+      puts "ID inválido ou usuário não encontrado."
     end
   end
 
-  def buscar_usuario_por_nome(nome)
-    usuario = @users.find {|u| u.name.downcase.include?(nome.downcase)}
-    if usuario
-      puts "Usuário encontrado: ID: #{usuario.id}, Nome: #{usuario.name}"
-      return usuario.id
+  def buscar_usuario_por_nome
+    print "Digite parte do nome para buscar: "
+    nome = gets.chomp.downcase
+    usuarios_encontrados = @users.select { |u| u.name.downcase.include?(nome) }
+    
+    if usuarios_encontrados.any?
+      puts "\nUsuários encontrados:"
+      usuarios_encontrados.each { |u| puts "ID: #{u.id} | Nome: #{u.name} | Email: #{u.email}" }
+      return usuarios_encontrados 
     else
-      puts "Usuário não encontrado."
+      puts "Nenhum usuário encontrado com '#{nome}'."
       nil
     end
   end
