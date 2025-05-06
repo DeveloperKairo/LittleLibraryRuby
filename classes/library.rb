@@ -119,6 +119,27 @@ class Library
     end
   end
 
+  def listar_emprestimos
+    if @loans.empty?
+      puts "Nenhum empréstimo ativo no momento."
+      return
+    end
+  
+    puts "\n===== EMPRÉSTIMOS ATIVOS ====="
+    @loans.each do |loan|
+      livro = @books.find { |b| b.id == loan[:book_id] }
+      usuario = @users.find { |u| u.id == loan[:user_id] }
+  
+      if livro && usuario
+        puts "Livro: #{livro.titulo} (ID: #{livro.id})"
+        puts "Emprestado para: #{usuario.name} (ID: #{usuario.id})"
+        puts "---------------------------------"
+      else
+        puts "Empréstimo inválido ou dados corrompidos (Livro ID: #{loan[:book_id]}, Usuário ID: #{loan[:user_id]})"
+      end
+    end
+  end
+
   def devolver_livro
     print "ID do livro a devolver: "
     book_id = gets.chomp.to_i
@@ -153,28 +174,104 @@ class Library
     @loans = data[:loans]
   end
 
-  def menu
+  def menu_principal
     loop do
-      puts "\n1. Adicionar livro"
-      puts "2. Registrar usuário"
-      puts "3. Emprestar livro"
-      puts "4. Devolver livro"
-      puts "5. Listar livros disponíveis"
-      puts "6. Sair"
-      print "Escolha: "
-      opcao = gets.chomp.to_i
-
+      puts "\n===== MENU PRINCIPAL ====="
+      puts "1. Usuários"
+      puts "2. Livros"
+      puts "3. Empréstimos"
+      puts "4. Sair"
+      print "Escolha uma opção: "
+      opcao = gets.chomp
+  
       case opcao
-      when 1 then adicionar_livro
-      when 2 then registrar_usuario
-      when 3 then emprestar_livro
-      when 4 then devolver_livro
-      when 5 then listar_livros_disponiveis
-      when 6
+      when "1"
+        menu_usuarios
+      when "2"
+        menu_livros
+      when "3"
+        menu_emprestimos
+      when "4"
         salvar_dados
+        puts "Saindo do sistema. Até logo!"
         break
       else
-        puts "Opção inválida!"
+        puts "Opção inválida. Tente novamente."
+      end
+    end
+  end
+
+  def menu_usuarios
+    loop do
+      puts "\n===== MENU USUÁRIOS ====="
+      puts "1. Registrar Usuário"
+      puts "2. Listar Usuários"
+      puts "3. Remover Usuário"
+      puts "4. Voltar ao Menu Principal"
+      print "Escolha uma opção: "
+      opcao = gets.chomp
+  
+      case opcao
+      when "1"
+        registrar_usuario
+      when "2"
+        listar_usuarios
+      when "3"
+        remover_usuario
+      when "4"
+        break
+      else
+        puts "Opção inválida. Tente novamente."
+      end
+    end
+  end
+
+  def menu_livros
+    loop do
+      puts "\n===== MENU LIVROS ====="
+      puts "1. Registrar Livro"
+      puts "2. Listar Livros"
+      puts "3. Remover Livro"
+      puts "4. Voltar ao Menu Principal"
+      print "Escolha uma opção: "
+      opcao = gets.chomp
+  
+      case opcao
+      when "1"
+        registrar_livro
+      when "2"
+        listar_livros
+      when "3"
+        remover_livro
+      when "4"
+        break
+      else
+        puts "Opção inválida. Tente novamente."
+      end
+    end
+  end
+
+  def menu_emprestimos
+    loop do
+      puts "\n===== MENU EMPRÉSTIMOS ====="
+      puts "1. Emprestar Livro"
+      puts "2. Devolver Livro"
+      puts "3. Listar Empréstimos"
+      puts "4. Voltar ao Menu Principal"
+      print "Escolha uma opção: "
+      opcao = gets.chomp
+  
+      case opcao
+      when "1"
+        emprestar_livro
+      when "2"
+        devolver_livro
+      when "3"
+        listar_emprestimos
+      when "4"
+        break
+      else
+        puts "Opção inválida. Tente novamente."
       end
     end
   end
