@@ -1,6 +1,4 @@
 require 'json'
-require_relative 'book'
-require_relative 'user'
 
 class Library
   def initialize
@@ -30,6 +28,17 @@ class Library
     id = @users.size + 1
     @users << User.new(id: id, nome: nome, email: email)
     puts "Usuário registrado com sucesso!"
+  end
+
+  def listar_usuarios
+    if @users.empty?
+      puts "Nenhum usuário registrado!"
+    else
+      puts "\n===== LISTA DE USUÁRIOS ====="
+      @users.each do |user|
+        puts "ID: #{user.id} | Nome: #{user.name} | Email: #{user.email}"
+      end
+    end
   end
 
   def listar_livros_disponiveis
