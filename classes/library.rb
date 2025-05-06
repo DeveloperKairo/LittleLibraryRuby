@@ -20,6 +20,20 @@ class Library
     puts "Livro adicionado com sucesso!"
   end
 
+  def remover_livro
+    listar_livros
+    print "Digite o ID do livro que deseja remover: "
+    id = gets.chomp.to_i
+    book = @books.find { |b| b.id == id }
+  
+    if book
+      @books.delete(book)
+      puts "Livro removido com sucesso."
+    else
+      puts "Livro não encontrado."
+    end
+  end
+
   def registrar_usuario
     print "Nome: "
     nome = gets.chomp
