@@ -1,7 +1,4 @@
-require 'json'
-require_relative 'classes/book'
-require_relative 'classes/user'
-require_relative 'classes/library'
+require_relative './classes/library'
 
-Library.new.menu
+Library.new.menu_principal
 
