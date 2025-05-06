@@ -80,14 +80,27 @@ class Library
   end
 
   def remover_usuario
-    listar_usuarios
-    print "Digite o ID do usuário que deseja remover: "
-    id = gets.chomp.to_i
-    user = @users.find { |u| u.id == id }
+    puts "\n--- BUSCAR USUÁRIO POR NOME (opcional) ---"
+    print "Digite parte do nome para buscar (ou Enter para pular): "
+    termo_busca = gets.chomp.downcase
   
-    if user
-      @users.delete(user)
-      puts "Usuário removido com sucesso."
+    if !termo_busca.empty?
+      usuarios_encontrados = @users.select { |u| u.name.downcase.include?(termo_busca) }
+      if usuarios_encontrados.any?
+        puts "\nUsuários encontrados:"
+        usuarios_encontrados.each { |u| puts "ID: #{u.id} | Nome: #{u.name} | Email: #{u.email}" }
+      else
+        puts "Nenhum usuário encontrado com '#{termo_busca}'."
+      end
+    end
+
+    print "\nDigite o ID do usuário que deseja remover: "
+    id = gets.chomp.to_i
+    usuario = @users.find { |u| u.id == id }
+  
+    if usuario
+      @users.delete(usuario)
+      puts "Usuário '#{usuario.name}' removido com sucesso!"
     else
       puts "Usuário não encontrado."
     end
