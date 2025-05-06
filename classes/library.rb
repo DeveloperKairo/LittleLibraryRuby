@@ -34,6 +34,17 @@ class Library
     end
   end
 
+  def buscar_livro_por_nome
+    livro = @books.find {|b| b.title.downcase.include?(nome.downcase)}
+    if livro
+      puts "Livro encontrado: ID: #{livro.id}, Título: #{livro.title}"
+      return livro.id
+    else
+      puts "Livro não encontrado."
+      nil
+    end
+  end
+
   def registrar_usuario
     print "Nome: "
     nome = gets.chomp
