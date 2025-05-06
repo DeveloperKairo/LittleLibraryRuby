@@ -41,6 +41,20 @@ class Library
     end
   end
 
+  def remover_usuario
+    listar_usuarios
+    print "Digite o ID do usuário que deseja remover: "
+    id = gets.chomp.to_i
+    user = @users.find { |u| u.id == id }
+  
+    if user
+      @users.delete(user)
+      puts "Usuário removido com sucesso."
+    else
+      puts "Usuário não encontrado."
+    end
+  end
+
   def listar_livros_disponiveis
     disp = @books.select(&:disponivel)
     if disp.empty?
