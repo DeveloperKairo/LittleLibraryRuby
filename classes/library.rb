@@ -21,8 +21,21 @@ class Library
   end
 
   def remover_livro
-    listar_livros
-    print "Digite o ID do livro que deseja remover: "
+    puts "\n--- BUSCAR LIVRO POR NOME (opcional) ---"
+    print "Digite parte do título para buscar (ou Enter para pular): "
+    termo_busca = gets.chomp.downcase
+  
+    if !termo_busca.empty?
+      livros_encontrados = @books.select { |b| b.titulo.downcase.include?(termo_busca) }
+      if livros_encontrados.any?
+        puts "\nLivros encontrados:"
+        livros_encontrados.each { |b| puts "ID: #{b.id} | Título: #{b.titulo}" }
+      else
+        puts "Nenhum livro encontrado com '#{termo_busca}'."
+      end
+    end
+  
+    print "\nDigite o ID do livro que deseja remover: "
     id = gets.chomp.to_i
     book = @books.find { |b| b.id == id }
   
