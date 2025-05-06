@@ -1,4 +1,6 @@
 require 'json'
+require_relative 'user'
+require_relative 'book'
 
 class Library
   def initialize
