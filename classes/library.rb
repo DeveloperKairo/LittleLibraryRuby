@@ -21,7 +21,7 @@ class Library
   end
 
   def remover_livro
-    puts "\n--- BUSCAR LIVRO ---"
+    puts "\n--- BUSCAR LIVRO PARA REMOÇÃO ---"
     livros_encontrados = buscar_livro_por_nome
     
     if livros_encontrados.nil? || livros_encontrados.empty?
