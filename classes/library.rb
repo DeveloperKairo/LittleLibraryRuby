@@ -69,6 +69,17 @@ class Library
     end
   end
 
+  def buscar_usuario_por_nome(nome)
+    usuario = @users.find {|u| u.name.downcase.include?(nome.downcase)}
+    if usuario
+      puts "Usuário encontrado: ID: #{usuario.id}, Nome: #{usuario.name}"
+      return usuario.id
+    else
+      puts "Usuário não encontrado."
+      nil
+    end
+  end
+
   def listar_livros_disponiveis
     disp = @books.select(&:disponivel)
     if disp.empty?
