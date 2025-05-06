@@ -6,7 +6,7 @@ Um sistema simples para gerenciar livros, usuários e empréstimos.
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seu-usuario/biblioteca-ruby.git
+   git clone https://github.com/DeveloperKairo/biblioteca-ruby.git
    ```
 
 2. Execute o programa:
