@@ -74,7 +74,7 @@ class Library
     else
       puts "\n===== LISTA DE USUÁRIOS ====="
       @users.each do |user|
-        puts "ID: #{user.id} | Nome: #{user.name} | Email: #{user.email}"
+        puts "ID: #{user.id} | Nome: #{user.nome} | Email: #{user.email}"
       end
     end
   end
