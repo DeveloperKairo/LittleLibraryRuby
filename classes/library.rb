@@ -43,6 +43,17 @@ class Library
     end
   end
 
+  def listar_livros
+    if @books.empty?
+      puts "Nenhum livro cadastrado!"
+    else
+      puts "\n===== LIVROS ====="
+      @books.each do |book|
+        puts "ID: #{book.id} | #{book.titulo} (#{book.autor}) - #{book.disponivel ? 'Disponível' : 'Emprestado'}"
+      end
+    end
+  end
+
   def buscar_livro_por_nome
     print "Digite parte do título para buscar: "
     termo = gets.chomp.downcase
@@ -93,7 +104,7 @@ class Library
   
     if usuario
       @users.delete(usuario)
-      puts "Usuário '#{usuario.name}' removido com sucesso!"
+      puts "Usuário '#{usuario.nome}' removido com sucesso!"
     else
       puts "ID inválido ou usuário não encontrado."
     end
@@ -102,11 +113,11 @@ class Library
   def buscar_usuario_por_nome
     print "Digite parte do nome para buscar: "
     nome = gets.chomp.downcase
-    usuarios_encontrados = @users.select { |u| u.name.downcase.include?(nome) }
+    usuarios_encontrados = @users.select { |u| u.nome.downcase.include?(nome) }
     
     if usuarios_encontrados.any?
       puts "\nUsuários encontrados:"
-      usuarios_encontrados.each { |u| puts "ID: #{u.id} | Nome: #{u.name} | Email: #{u.email}" }
+      usuarios_encontrados.each { |u| puts "ID: #{u.id} | Nome: #{u.nome} | Email: #{u.email}" }
       return usuarios_encontrados 
     else
       puts "Nenhum usuário encontrado com '#{nome}'."
@@ -115,6 +126,7 @@ class Library
   end
 
   def listar_livros_disponiveis
+    puts "\n=== LIVROS DISPONÍVEIS ==="
     disp = @books.select(&:disponivel)
     if disp.empty?
       puts "Nenhum livro disponível."
@@ -124,22 +136,50 @@ class Library
   end
 
   def emprestar_livro
-    listar_livros_disponiveis
-    print "ID do livro para emprestar: "
-    book_id = gets.chomp.to_i
-    print "ID do usuário: "
-    user_id = gets.chomp.to_i
-
-    livro = @books.find { |b| b.id == book_id && b.disponivel }
-    usuario = @users.find { |u| u.id == user_id }
-
-    if livro && usuario
-      livro.disponivel = false
-      @loans << { book_id: livro.id, user_id: usuario.id }
-      puts "Livro emprestado!"
-    else
-      puts "Livro ou usuário inválido."
+    livros_disponiveis = @books.select(&:disponivel)
+    if livros_disponiveis.empty?
+      puts "Não há livros disponíveis para empréstimo no momento."
+      return
     end
+  
+    if @users.empty?
+      puts "Não há usuários cadastrados. Registre um usuário primeiro."
+      return
+    end
+  
+    listar_livros_disponiveis
+    
+    print "\nDigite o ID do livro para emprestar: "
+    book_id = gets.chomp.to_i
+    livro = @books.find { |b| b.id == book_id && b.disponivel }
+  
+    unless livro
+      puts "\n Livro não encontrado ou indisponível."
+      return
+    end
+  
+    puts "\n=== BUSCAR USUÁRIOS POR NOME ==="
+    buscar_usuario_por_nome
+
+  
+    print "\nDigite o ID do usuário: "
+    user_id = gets.chomp.to_i
+    usuario = @users.find { |u| u.id == user_id }
+  
+    unless usuario
+      puts "\n Usuário não encontrado."
+      return
+    end
+  
+    livro.disponivel = false
+    @loans << { 
+      book_id: livro.id, 
+      user_id: usuario.id,
+    }
+  
+    puts "\n EMPRÉSTIMO REGISTRADO:"
+    puts "Livro: #{livro.titulo} (ID: #{livro.id})"
+    puts "Usuário: #{usuario.nome} (ID: #{usuario.id})"
   end
 
   def listar_emprestimos
@@ -155,7 +195,7 @@ class Library
   
       if livro && usuario
         puts "Livro: #{livro.titulo} (ID: #{livro.id})"
-        puts "Emprestado para: #{usuario.name} (ID: #{usuario.id})"
+        puts "Emprestado para: #{usuario.nome} (ID: #{usuario.id})"
         puts "---------------------------------"
       else
         puts "Empréstimo inválido ou dados corrompidos (Livro ID: #{loan[:book_id]}, Usuário ID: #{loan[:user_id]})"
@@ -164,17 +204,24 @@ class Library
   end
 
   def devolver_livro
-    print "ID do livro a devolver: "
+    if @loans.empty?
+      puts "Não há empréstimos ativos no momento."
+      return  
+    end
+  
+    listar_emprestimos
+    
+    print "\nDigite o ID do livro a devolver: "
     book_id = gets.chomp.to_i
     loan = @loans.find { |l| l[:book_id] == book_id }
     livro = @books.find { |b| b.id == book_id }
-
+  
     if loan && livro
       livro.disponivel = true
       @loans.delete(loan)
-      puts "Livro devolvido!"
+      puts "\n Livro '#{livro.titulo}' devolvido com sucesso!"
     else
-      puts "Empréstimo não encontrado."
+      puts "\n Empréstimo não encontrado para o ID informado."
     end
   end
 
@@ -254,19 +301,22 @@ class Library
       puts "\n===== MENU LIVROS ====="
       puts "1. Registrar Livro"
       puts "2. Listar Livros"
-      puts "3. Remover Livro"
-      puts "4. Voltar ao Menu Principal"
+      puts "3. Listar livros disponíveis"
+      puts "4. Remover Livro"
+      puts "5. Voltar ao Menu Principal"
       print "Escolha uma opção: "
       opcao = gets.chomp
   
       case opcao
       when "1"
-        registrar_livro
+        adicionar_livro
       when "2"
         listar_livros
       when "3"
-        remover_livro
+        listar_livros_disponiveis
       when "4"
+        remover_livro
+      when "5"
         break
       else
         puts "Opção inválida. Tente novamente."
